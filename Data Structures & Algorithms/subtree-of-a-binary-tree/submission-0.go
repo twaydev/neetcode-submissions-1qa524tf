@@ -1,0 +1,59 @@
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+
+
+func isSameTree(p *TreeNode, q *TreeNode) bool {
+
+	if p == nil && q == nil {
+		return true
+	}
+	stack := [][]*TreeNode{{p, q}}
+	for len(stack) > 0 {
+		// pop node to process
+		curr := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+
+		// fmt.Printf("%v - %v\n", curr[0], curr[1])
+
+		if curr[0] == nil && curr[1] == nil {
+			continue
+		}
+		if curr[0] == nil || curr[1] == nil {
+			return false
+		}
+		if curr[0].Val != curr[1].Val {
+			return false
+		}
+		// push to process
+		stack = append(stack, []*TreeNode{curr[0].Right, curr[1].Right})
+		stack = append(stack, []*TreeNode{curr[0].Left, curr[1].Left})
+
+	}
+
+	return true
+}
+
+func isSubtree(root *TreeNode, subRoot *TreeNode) bool {
+
+	stack := []*TreeNode{root}
+	for len(stack) > 0 {
+		curr := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+		if isSameTree(curr, subRoot) {
+			return true
+		}
+		if curr.Right != nil {
+			stack = append(stack, curr.Right)
+		}
+		if curr.Left != nil {
+			stack = append(stack, curr.Left)
+		}
+	}
+	return false
+}
